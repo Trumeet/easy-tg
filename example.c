@@ -1,9 +1,10 @@
+#define _POSIX_C_SOURCE 200809L
 #include "easy-tg.h"
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
-
-/* In this example we are not closing TDLib properly. In a real-world program, you need to call tg_close() to make a close request to TDLib (any thread is OK), and wait for the TG_CLOSED response. */
+#include <pthread.h>
+#include <signal.h>
 
 static void read_input(const char *prompt, char *buf, unsigned int len)
 {
@@ -34,9 +35,57 @@ static void run()
 	printf("%s\n", tg_update_type);
 }
 
+static void *main_sighandler(void *arg)
+{
+        pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+        int r = 0;
+        sigset_t *set = arg;
+        int sig;
+        while(true)
+        {
+                r = sigwait(set, &sig);
+                if(r)
+                {
+                        fprintf(stderr, "Cannot call sigwait(): %d.\n", r);
+                        goto cleanup;
+                }
+                switch(sig)
+                {
+                        case SIGINT:
+                        case SIGTERM:
+                                printf("Received SIGINT or SIGTERM, asking TDLib to close.\n");
+                                tg_close();
+                                goto cleanup;
+                }
+        }
+        goto cleanup;
+cleanup:
+        pthread_exit(NULL);
+        return NULL;
+}
+
 int main(int argc, char **argv)
 {
+	bool sighandler_setup = false;
+	pthread_t thread_sighandler;
 	int r = 0;
+        sigset_t set;
+        sigemptyset(&set);
+        sigaddset(&set, SIGTERM);
+        sigaddset(&set, SIGINT);
+        r = pthread_sigmask(SIG_BLOCK, &set, NULL);
+        if(r)
+        {
+                fprintf(stderr, "Cannot call pthread_sigmask(): %d\n", r);
+                goto cleanup;
+        }
+        r = pthread_create(&thread_sighandler, NULL, &main_sighandler, &set);
+        if(r)
+        {
+                fprintf(stderr, "Cannot call pthread_create(): %d\n", r);
+                goto cleanup;
+        }
+        sighandler_setup = true;
 	r = tg_init();
 	if(r) goto cleanup; /* Fetal errors encountered. */
 	while(1)
@@ -135,5 +184,10 @@ destroy:
 	tg_destroy();
 	goto cleanup;
 cleanup:
+	if(sighandler_setup)
+        {
+                pthread_cancel(thread_sighandler);
+                pthread_join(thread_sighandler, NULL);
+        }
 	return r;
 }
