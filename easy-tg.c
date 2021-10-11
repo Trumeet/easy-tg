@@ -18,11 +18,6 @@ const void *tg_reg4 = NULL;
 const void *tg_reg5 = NULL;
 const void *tg_reg6 = NULL;
 
-#ifdef TG_ENABLE_PTHREAD
-#include <pthread.h>
-static pthread_mutex_t mutex_close = PTHREAD_MUTEX_INITIALIZER;
-#endif
-
 json_object *tg_mkreq(const char *extra, const char *type, const char *args_key, json_object *args)
 {
 	json_object *root = json_object_new_object();
@@ -233,18 +228,12 @@ cleanup:
 
 int tg_destroy()
 {
-#ifdef TG_ENABLE_PTHREAD
-	pthread_mutex_lock(&mutex_close);
-#endif
 	if(td == NULL)
 	{
 		return 0;
 	}
 	td_json_client_destroy(td);
 	td = NULL;
-#ifdef TG_ENABLE_PTHREAD
-	pthread_mutex_unlock(&mutex_close);
-#endif
 	return 0;
 }
 
@@ -287,14 +276,8 @@ cleanup:
 
 int tg_close()
 {
-#ifdef TG_ENABLE_PTHREAD
-	pthread_mutex_lock(&mutex_close);
-#endif
 	if(td == NULL) return 0;
 	/* Using json object seems to be leaking */
 	tg_send_raw(false, "{ \"@type\": \"close\" }");
-#ifdef TG_ENABLE_PTHREAD
-	pthread_mutex_unlock(&mutex_close);
-#endif
 	return 0;
 }

@@ -10,8 +10,6 @@ Easy-to-use helpers for TDLib JSON.
 
 * json-c
 
-* pthread (if you compile with `TG_ENABLE_PTHREAD`)
-
 ## Functions
 
 * Automatically handles authorization state changes.
