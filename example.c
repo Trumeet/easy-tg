@@ -11,6 +11,7 @@
 static void read_input(const char *prompt, char *buf, unsigned int len)
 {
 	printf("%s", prompt);
+	fflush(stdout);
 	ssize_t size = read(0, buf, len + 1);
 	if(size >= 1) buf[size - 1] = '\0';
 	printf("Read: %s\n", buf);
