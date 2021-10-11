@@ -1,0 +1,5 @@
+#!/bin/sh
+set -ex
+cc -o easy-td.o -std=c99 -I. -DTG_ENABLE_PTHREAD -DTG_DEBUG -fsanitize=address -rdynamic -O0 -g3 -c easy-tg.c
+cc -o example.o -std=c99 -I. -DAPI_ID=114514 -DAPI_HASH="\"hhhhhAAAAA\"" -fsanitize=address -rdynamic -O0 -g3 -c example.c
+cc -o example -std=c99 -lpthread -ltdjson -ljson-c -fsanitize=address easy-td.o example.o
