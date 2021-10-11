@@ -1,6 +1,3 @@
-#define TG_DEBUG
-#define TG_ENABLE_PTHREAD
-
 #include "easy-tg.h"
 #include <stdio.h>
 #include <unistd.h>
