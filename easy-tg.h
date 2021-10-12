@@ -14,7 +14,7 @@
 #define TG_LOGIN_PW	9	/* Need to input the password. */
 #define TG_LOGIN_REG	10	/* Need to register. */
 #define TG_PARAMS	11	/* Need to provide TDLib parameters. */
-#define TG_ERROR	12	/* TDLib returns an error. td_errno = code, r1 = extra, r2 = msg. */
+#define TG_ERROR	12	/* TDLib returns an error. tg_errno = code, r1 = extra, r2 = msg. */
 #define TG_SYSERR	13	/* EasyTD encounters an error. */
 #define TG_CONNECTION	14	/* Telegram connection state update. tg_errno = code, r1 = raw type */
 

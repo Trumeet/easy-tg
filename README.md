@@ -30,4 +30,4 @@ See `example.c`. Put your API keys into `build` then run it.
 
 ## License
 
-Copyright Yuuta Liang, Apache 2.0. Originally published at https://git.yuuta.moe/easy-tg.git
+Copyright Yuuta Liang, Apache 2.0. Originally published at https://git.yuuta.moe/cgit.cgi/easy-tg.git/
