@@ -16,11 +16,18 @@
 #define TG_PARAMS	11	/* Need to provide TDLib parameters. */
 #define TG_ERROR	12	/* TDLib returns an error. td_errno = code, r1 = extra, r2 = msg. */
 #define TG_SYSERR	13	/* EasyTD encounters an error. */
+#define TG_CONNECTION	14	/* Telegram connection state update. tg_errno = code, r1 = raw type */
 
 #define TG_REQ_SET_PARAMS	"set_params"
 #define TG_REQ_LOGIN_PHONE	"login_phone"
 #define TG_REQ_LOGIN_CODE	"login_code"
 #define TG_REQ_LOGIN_PASS	"login_pass"
+
+#define TG_CONNECTION_CONNECTING	1
+#define TG_CONNECTION_CONNECTING_PROXY	2
+#define TG_CONNECTION_READY		3
+#define TG_CONNECTION_UPDATING		4
+#define TG_CONNECTION_WAITING_NETWORK	5
 
 #include <json-c/json_object.h>
 #include <stdint.h>

@@ -174,6 +174,9 @@ int main(int argc, char **argv)
 				/* Error code is stored in tg_errno. */
 				printf("Fetal: %d\n", tg_errno);
 				break;
+			case TG_CONNECTION: /* Telegram connection status is changed. */
+				printf("[CONNECTION]: %s (%d)\n", tg_reg1, tg_errno);
+				break;
 			default:
 				printf("???\n");
 				break;

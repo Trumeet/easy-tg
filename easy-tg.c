@@ -237,6 +237,33 @@ int tg_destroy()
 	return 0;
 }
 
+static int handle_update_connection_state(const json_object *json)
+{
+	int r = TG_IGNORE;
+	json_object *obj = NULL;
+	if(!json_object_object_get_ex(json, "state", &obj) ||
+			!json_object_object_get_ex(obj, "@type", &obj))
+		goto cleanup;
+	r = TG_CONNECTION;
+	tg_reg1 = json_object_get_string(obj);
+	if(!strcmp(tg_reg1, "connectionStateConnecting"))
+		tg_errno = TG_CONNECTION_CONNECTING;
+	else if(!strcmp(tg_reg1, "connectionStateConnectingToProxy"))
+		tg_errno = TG_CONNECTION_CONNECTING_PROXY;
+	else if(!strcmp(tg_reg1, "connectionStateReady"))
+		tg_errno = TG_CONNECTION_READY;
+	else if(!strcmp(tg_reg1, "connectionStateUpdating"))
+		tg_errno = TG_CONNECTION_UPDATING;
+	else if(!strcmp(tg_reg1, "connectionStateWaitingForNetwork"))
+		tg_errno = TG_CONNECTION_WAITING_NETWORK;
+	else
+		r = TG_RUN;
+
+	goto cleanup;
+cleanup:
+	return r;
+}
+
 int tg_loop()
 {
 	if(tg_update != NULL)
@@ -267,6 +294,8 @@ int tg_loop()
                 r = handle_update_authorization_state(tg_update);
 	else if(!strcmp(tg_update_type, "error"))
 		r = handle_update_error(tg_update);
+	else if(!strcmp(tg_update_type, "updateConnectionState"))
+		r = handle_update_connection_state(tg_update);
 	else
 		r = TG_RUN;
         goto cleanup;
