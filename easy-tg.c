@@ -141,20 +141,20 @@ cleanup:
         return r;
 }
 
-static int handle_update_error(const json_object *json)
+static int handle_update_error()
 {
 	int r = TG_IGNORE;
 	int code = -1;
 	const char *msg = NULL;
 	const char *extra = NULL;
 	json_object *obj = NULL;
-	if(!json_object_object_get_ex(json, "code", &obj))
+	if(!json_object_object_get_ex(tg_update, "code", &obj))
 		goto cleanup;
 	code = json_object_get_int(obj);
-	if(!json_object_object_get_ex(json, "message", &obj))
+	if(!json_object_object_get_ex(tg_update, "message", &obj))
 		goto cleanup;
 	msg = json_object_get_string(obj);
-	if(json_object_object_get_ex(json, "@extra", &obj))
+	if(json_object_object_get_ex(tg_update, "@extra", &obj))
 		extra = json_object_get_string(obj);
 	tg_errno = code;
 	tg_reg1 = extra;
@@ -165,11 +165,11 @@ cleanup:
 	return r;
 }
 
-static int handle_update_authorization_state(const json_object *json)
+static int handle_update_authorization_state()
 {
         int r = 0;
         json_object *obj = NULL;
-        if(!json_object_object_get_ex(json, "authorization_state", &obj))
+        if(!json_object_object_get_ex(tg_update, "authorization_state", &obj))
                 goto cleanup;
 	json_object *type_obj = NULL;
         if(!json_object_object_get_ex(obj, "@type", &type_obj))
@@ -237,11 +237,11 @@ int tg_destroy()
 	return 0;
 }
 
-static int handle_update_connection_state(const json_object *json)
+static int handle_update_connection_state()
 {
 	int r = TG_IGNORE;
 	json_object *obj = NULL;
-	if(!json_object_object_get_ex(json, "state", &obj) ||
+	if(!json_object_object_get_ex(tg_update, "state", &obj) ||
 			!json_object_object_get_ex(obj, "@type", &obj))
 		goto cleanup;
 	r = TG_CONNECTION;
