@@ -310,11 +310,11 @@ int tg_loop()
 		goto cleanup;
         tg_update_type = json_object_get_string(obj);
         if(!strcmp(tg_update_type, "updateAuthorizationState"))
-                r = handle_update_authorization_state(tg_update);
+                r = handle_update_authorization_state();
 	else if(!strcmp(tg_update_type, "error"))
-		r = handle_update_error(tg_update);
+		r = handle_update_error();
 	else if(!strcmp(tg_update_type, "updateConnectionState"))
-		r = handle_update_connection_state(tg_update);
+		r = handle_update_connection_state();
 	else
 		r = TG_RUN;
         goto cleanup;
