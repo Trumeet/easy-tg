@@ -82,6 +82,18 @@ cleanup:
         return r;
 }
 
+int tg_login_token(
+		const char *token
+		)
+{
+	int r = 0;
+	json_object *raw_req = json_object_new_string(token);
+        tg_send(false, tg_mkreq(TG_REQ_LOGIN_TOKEN, "checkAuthenticationBotToken", "token", raw_req), true);
+	goto cleanup;
+cleanup:
+	return r;
+}
+
 int tg_login_code(
 		const char *code
 		)

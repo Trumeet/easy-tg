@@ -39,6 +39,7 @@
 
 #define TG_REQ_SET_PARAMS	"set_params"
 #define TG_REQ_LOGIN_PHONE	"login_phone"
+#define TG_REQ_LOGIN_TOKEN	"login_token"
 #define TG_REQ_LOGIN_CODE	"login_code"
 #define TG_REQ_LOGIN_PASS	"login_pass"
 
@@ -94,6 +95,10 @@ int tg_set_params(
 /* MT-Safe */
 int tg_login_phone(
 		const char *phone_number
+		);
+/* MT-Safe */
+int tg_login_token(
+		const char *token
 		);
 /* MT-Safe */
 int tg_login_code(
